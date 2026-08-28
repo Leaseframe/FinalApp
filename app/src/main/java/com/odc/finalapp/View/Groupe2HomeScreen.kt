@@ -27,7 +27,7 @@ import com.odc.finalapp.ViewModel.Groupe2HomeViewModel
 
 @Composable
 fun Groupe2HomeScreen(
-    onNavigate: (String) -> Unit,
+//    onNavigate: (String) -> Unit,
     viewModel: Groupe2HomeViewModel = viewModel()
 ) {
     val dashboard by viewModel.dashboard.collectAsState()
@@ -142,9 +142,9 @@ fun Groupe2HomeScreen(
             )
         }
 
-        Groupe2BottomBar(
-            currentRoute = "home",
-            onNavigate = onNavigate
-        )
+//        Groupe2BottomBar(
+//            currentRoute = "home",
+//            onNavigate = onNavigate
+//        )
     }
 }

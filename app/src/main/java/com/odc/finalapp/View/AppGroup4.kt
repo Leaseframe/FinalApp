@@ -1,10 +1,30 @@
-package com.odc.finalapp.View
+package com.odc.finalapp
 
+import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
+import com.odc.finalapp.Database.AppDatabase
+import com.odc.finalapp.View.AddLivraisonScreen
+import com.odc.finalapp.View.AddProductScreen
+import com.odc.finalapp.View.LivraisonScreen
+import com.odc.finalapp.View.StockScreen
+import com.odc.finalapp.ViewModel.LivraisonViewModel
+import com.odc.finalapp.ViewModel.StockViewModel
+import com.odc.finalapp.ui.theme.FinalAppTheme
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.runtime.Composable
-
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +34,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Surface
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
+import com.odc.finalapp.ui.theme.HomeGradientEnd
+import com.odc.finalapp.ui.theme.HomeGradientStart
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.LocalShipping
@@ -24,20 +50,147 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.odc.finalapp.ui.theme.HomeGradientEnd
-import com.odc.finalapp.ui.theme.HomeGradientStart
 
 @Composable
-fun HomeScreen(
+fun AppGroup4() {
+
+    // Récupération du contexte Android
+    val context = LocalContext.current
+
+    // Création de la base de données
+    val database = remember {
+        AppDatabase.getDatabase(context)
+    }
+
+    // Récupération des DAO
+    val produitDao = database.produitDao()
+    val livraisonDao = database.livraisonDao()
+
+    // ViewModel du stock
+    val stockViewModel: StockViewModel = viewModel(
+        factory = remember {
+            object : ViewModelProvider.Factory {
+
+                override fun <T : ViewModel> create(
+                    modelClass: Class<T>
+                ): T {
+
+                    @Suppress("UNCHECKED_CAST")
+
+                    return StockViewModel(
+                        produitDao
+                    ) as T
+                }
+            }
+        }
+    )
+
+    // ViewModel des livraisons
+    val livraisonViewModel: LivraisonViewModel = viewModel(
+        factory = remember {
+            object : ViewModelProvider.Factory {
+
+                override fun <T : ViewModel> create(
+                    modelClass: Class<T>
+                ): T {
+
+                    @Suppress("UNCHECKED_CAST")
+
+                    return LivraisonViewModel(
+                        livraisonDao
+                    ) as T
+                }
+            }
+        }
+    )
+
+    // Navigation
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = "home"
+    ) {
+
+        // Écran d'accueil
+        composable("home") {
+
+            HomesScreens(
+                onNavigateToStock = {
+                    navController.navigate("stock")
+                },
+
+                onNavigateToLivraison = {
+                    navController.navigate("livraison")
+                }
+            )
+        }
+
+        // Gestion du stock
+        composable("stock") {
+
+            StockScreen(
+                viewModel = stockViewModel,
+
+                onAddProduct = {
+                    navController.navigate("add_product")
+                },
+
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Ajouter un produit
+        composable("add_product") {
+
+            AddProductScreen(
+                viewModel = stockViewModel,
+
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Livraisons
+        composable("livraison") {
+
+            LivraisonScreen(
+                viewModel = livraisonViewModel,
+
+                onAddLivraison = {
+                    navController.navigate("add_livraison")
+                },
+
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Ajouter une livraison
+        composable("add_livraison") {
+
+            AddLivraisonScreen(
+                livraisonViewModel = livraisonViewModel,
+                stockViewModel = stockViewModel,
+
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun HomesScreens(
     onNavigateToStock: () -> Unit,
     onNavigateToLivraison: () -> Unit
 ) {

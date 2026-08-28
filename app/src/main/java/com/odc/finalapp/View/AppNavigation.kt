@@ -46,7 +46,13 @@ fun AppNavigation() {
         }
 
         composable("home") {
-            HomeScreen()
+            //HomeScreen()
+//            Groupe2HomeScreen(
+//                onNavigate = { route ->
+//                    nC.navigate(route)
+//                }
+//            )
+            Groupe3Navigation()
         }
     }
 }

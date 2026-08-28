@@ -1,10 +1,11 @@
-package com.odc.finalapp.View
+package com.odc.finalapp
 
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.runtime.Composable
-
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Surface
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
+import com.odc.finalapp.ui.theme.HomeGradientEnd
+import com.odc.finalapp.ui.theme.HomeGradientStart
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.LocalShipping
@@ -24,17 +31,96 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.odc.finalapp.ui.theme.HomeGradientEnd
-import com.odc.finalapp.ui.theme.HomeGradientStart
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.odc.finalapp.Database.AppDatabase
+import com.odc.finalapp.View.AddLivraisonScreen
+import com.odc.finalapp.View.AddProductScreen
+import com.odc.finalapp.View.LivraisonScreen
+import com.odc.finalapp.View.StockScreen
+import com.odc.finalapp.ViewModel.LivraisonViewModel
+import com.odc.finalapp.ViewModel.StockViewModel
+import com.odc.finalapp.ui.theme.FinalAppTheme
+
+class StartGroup4 : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        val database = AppDatabase.getDatabase(this)
+        val produitDao = database.produitDao()
+        val livraisonDao = database.livraisonDao()
+
+        setContent {
+            FinalAppTheme {
+                val navController = rememberNavController()
+
+                val stockViewModel: StockViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            @Suppress("UNCHECKED_CAST")
+                            return StockViewModel(produitDao) as T
+                        }
+                    }
+                )
+
+                val livraisonViewModel: LivraisonViewModel = viewModel(
+                    factory = object : ViewModelProvider.Factory {
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            @Suppress("UNCHECKED_CAST")
+                            return LivraisonViewModel(livraisonDao) as T
+                        }
+                    }
+                )
+
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") {
+                        HomeScreen(
+                            onNavigateToStock = { navController.navigate("stock") },
+                            onNavigateToLivraison = { navController.navigate("livraison") }
+                        )
+                    }
+                    composable("stock") {
+                        StockScreen(
+                            viewModel = stockViewModel,
+                            onAddProduct = { navController.navigate("add_product") },
+                            onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable("add_product") {
+                        AddProductScreen(
+                            viewModel = stockViewModel,
+                            onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable("livraison") {
+                        LivraisonScreen(
+                            viewModel = livraisonViewModel,
+                            onAddLivraison = { navController.navigate("add_livraison") },
+                            onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable("add_livraison") {
+                        AddLivraisonScreen(
+                            livraisonViewModel = livraisonViewModel,
+                            stockViewModel = stockViewModel,
+                            onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun HomeScreen(

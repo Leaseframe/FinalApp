@@ -60,7 +60,6 @@ fun Groupe2BottomBar(
                 onNavigate("clients")
             }
         )
-
         Groupe2BottomBarItem(
             modifier = Modifier.weight(1f),
             selected = currentRoute == "fournisseurs",
@@ -68,6 +67,16 @@ fun Groupe2BottomBar(
             label = "Fournisseurs",
             onClick = {
                 onNavigate("fournisseurs")
+            }
+        )
+
+        Groupe2BottomBarItem(
+            modifier = Modifier.weight(1f),
+            selected = currentRoute == "Stocks",
+            icon = Icons.Default.Business,
+            label = "Stocks",
+            onClick = {
+                onNavigate("Stocks")
             }
         )
 
