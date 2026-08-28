@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+<<<<<<< HEAD
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -23,11 +24,21 @@ import com.odc.finalapp.ui.theme.FinalAppTheme
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+=======
+import com.odc.finalapp.Navigation.Groupe2Navigation
+import com.odc.finalapp.ui.theme.FinalAppTheme
+
+class MainActivity : ComponentActivity() {
+
+>>>>>>> origin/Groupe2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
+
         setContent {
             FinalAppTheme {
+<<<<<<< HEAD
                 Scaffold(modifier = Modifier.fillMaxSize()) {
 
                     AppNavigation()
@@ -39,3 +50,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+=======
+                Groupe2Navigation()
+            }
+        }
+    }
+}
+>>>>>>> origin/Groupe2
