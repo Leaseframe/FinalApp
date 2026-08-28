@@ -3,6 +3,7 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" languageLevel="JDK_25" default="true" project-jdk-name="jbr-25" project-jdk-type="JavaSDK" />
 =======
   <component name="ProjectRootManager" version="2" languageLevel="JDK_25">
@@ -14,6 +15,9 @@
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
 >>>>>>> origin/group3
+=======
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_25" default="true" project-jdk-name="jbr-25" project-jdk-type="JavaSDK" />
+>>>>>>> origin/groupe4
   <component name="ProjectType">
     <option name="id" value="Android" />
   </component>
